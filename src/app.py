@@ -1,12 +1,12 @@
 import streamlit as st
 import pandas as pd
 
-from src.agents.planner import PlannerAgent
-from src.agents.explainer import ExplainerAgent
-from src.executor.executor import execute_plan
-from src.agents.dataset_analyzer import analyze_dataset
-from src.schemas.plan_validator import validate_plan
-from src.config import MODEL_NAME
+from agents.planner import PlannerAgent
+from agents.explainer import ExplainerAgent
+from executor.executor import execute_plan
+from agents.dataset_analyzer import analyze_dataset
+from schemas.plan_validator import validate_plan
+from config import MODEL_NAME
 
 
 def is_dataset_info_query(question: str) -> bool:

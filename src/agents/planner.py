@@ -3,7 +3,7 @@ import os
 import re
 from groq import Groq
 from dotenv import load_dotenv
-from src.config import MODEL_NAME
+from config import MODEL_NAME
 
 load_dotenv()
 
