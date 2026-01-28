@@ -159,7 +159,6 @@ Then open the URL shown in the terminal (usually [http://localhost:8501](http://
 
 * Compare total SALES by COUNTRY
 * Show average SALES for each REGION
-* Find top 5 COUNTRIES by SALES
 * Show sales distribution
 * Find correlation between SALES and PROFIT
 * Describe the dataset
