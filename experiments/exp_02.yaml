@@ -1,0 +1,15 @@
+name: planner_determinism_evaluation
+
+model: llama-3.1-8b-instant
+
+planner_temperature: 0.0
+
+executor_engine: pandas
+
+visualization_library: plotly
+
+explainer: enabled
+
+evaluation_focus: robustness_across_queries
+
+seed: 42

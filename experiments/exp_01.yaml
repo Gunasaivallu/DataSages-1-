@@ -1,0 +1,13 @@
+name: baseline_planner_executor_explainer
+
+model: llama-3.1-8b-instant
+
+planner_temperature: 0.0
+
+executor_engine: pandas
+
+visualization_library: plotly
+
+explainer: enabled
+
+seed: 42

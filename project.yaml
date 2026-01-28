@@ -1,0 +1,23 @@
+Project Name: "DataSages – AI Data Analyst Agent"
+Employee Name: "Gunasai Vallu"
+
+models_used:
+  - llama-3.1-8b-instant
+
+data:
+  - synthetic
+
+tools:
+  - python
+  - pandas
+  - plotly
+  - streamlit
+  - groq
+
+evaluation:
+  - automated
+  - human
+
+compute:
+  platform: cloud
+  gpu: none
