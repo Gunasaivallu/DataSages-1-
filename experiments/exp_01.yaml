@@ -1,13 +1,23 @@
 name: baseline_planner_executor_explainer
 
-model: llama-3.1-8b-instant
+description: >
+  Baseline evaluation of the full Planner–Validator–Executor–Explainer pipeline
+  on standard aggregation and comparison queries.
 
+model: llama-3.1-8b-instant
 planner_temperature: 0.0
 
 executor_engine: pandas
-
 visualization_library: plotly
-
 explainer: enabled
 
+dataset_type: structured_csv
+query_set: standard_analytics
+
+metrics:
+  - correctness
+  - determinism
+  - schema_validity
+
+num_trials: 10
 seed: 42

@@ -1,15 +1,23 @@
 name: planner_determinism_evaluation
 
-model: llama-3.1-8b-instant
+description: >
+  Measures consistency of planner output across repeated runs
+  with identical input queries.
 
+model: llama-3.1-8b-instant
 planner_temperature: 0.0
 
 executor_engine: pandas
-
 visualization_library: plotly
-
 explainer: enabled
 
 evaluation_focus: robustness_across_queries
+
+query_set: repeated_queries
+num_trials: 20
+
+metrics:
+  - json_structure_stability
+  - output_consistency
 
 seed: 42
