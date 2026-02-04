@@ -54,6 +54,9 @@ User → Streamlit UI → Planner Agent → Plan Validator → Executor → Expl
 
 The LLM never directly accesses or manipulates the dataset.
 
+<img width="444" height="549" alt="image" src="https://github.com/user-attachments/assets/e0ea4e33-916f-4ba0-9e1e-60afce69c73b" />
+
+
 ---
 
 ## 5. Models and Versions Used
