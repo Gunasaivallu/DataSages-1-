@@ -17,7 +17,6 @@ INVALID_METRIC_OPERATIONS = {"bar", "line", "scatter", "histogram"}
 
 
 def validate_plan(plan: dict, df_columns: list):
-
     if not isinstance(plan, dict):
         raise ValueError("Plan must be a dictionary")
 
@@ -61,7 +60,7 @@ def validate_plan(plan: dict, df_columns: list):
             raise ValueError(f"Invalid group_by column: {col}")
 
     # --------------------------------------------------
-    # 🔥 METRICS CLEANING
+    # 🔥 METRICS (DEFENSIVE + INTENT AWARE)
     # --------------------------------------------------
     cleaned_metrics = []
 
@@ -83,6 +82,7 @@ def validate_plan(plan: dict, df_columns: list):
 
         cleaned_metrics.append(m)
 
+    # Replace metrics with cleaned version
     plan["metrics"] = cleaned_metrics
 
     # Distribution & correlation MUST NOT have metrics
@@ -92,46 +92,33 @@ def validate_plan(plan: dict, df_columns: list):
         )
 
     # --------------------------------------------------
-    # VISUALIZATION
+    # VISUALIZATION - PROPERLY HANDLE NULL VALUES
     # --------------------------------------------------
     viz = plan["visualization"]
     if not viz:
         return True
 
-    # convert string null → None
+    # 🔥 FIX: Convert string "null"/"NULL" to actual None
     for key in ["x", "y", "color", "top_n"]:
-        if key in viz and viz[key] in ("null", "NULL"):
-            viz[key] = None
+        if key in viz:
+            if viz[key] in ("null", "NULL"):
+                viz[key] = None
 
     if viz["type"] not in ALLOWED_VIZ_TYPES:
         raise ValueError(f"Invalid visualization type: {viz['type']}")
 
     # --------------------------------------------------
-    # 🔥 AUTO-FIX: metric accidentally placed in y-axis
+    # TYPE-SPECIFIC VALIDATION
     # --------------------------------------------------
-    if viz.get("y") in ALLOWED_METRICS:
-        # move metric into metrics list
-        if plan["group_by"]:
-            target_col = plan["group_by"][0]
-        else:
-            target_col = df_columns[0]
-
-        plan["metrics"].append({
-            "operation": viz["y"],
-            "column": target_col
-        })
-
-        viz["y"] = target_col
-
-    # --------------------------------------------------
-    # TYPE RULES
-    # --------------------------------------------------
+    
+    # Histogram rules
     if viz["type"] == "histogram":
         if viz.get("y") is not None:
             raise ValueError("Histogram must not have y-axis")
         if viz.get("x") is None:
             raise ValueError("Histogram must have x-axis specified")
 
+    # Correlation rules
     if analysis_type == "correlation":
         if viz["type"] != "scatter":
             raise ValueError("Correlation requires scatter plot")
@@ -139,16 +126,20 @@ def validate_plan(plan: dict, df_columns: list):
             raise ValueError("Correlation scatter plot must have both x and y axes")
 
     # --------------------------------------------------
-    # AXIS VALIDATION
+    # VALIDATE X/Y AXES (ONLY IF NOT NULL)
     # --------------------------------------------------
+    
+    # Only validate x if it's not None
     if viz.get("x") is not None and viz["x"] not in df_columns:
         raise ValueError(f"Invalid x-axis: {viz['x']}")
 
-    if viz.get("y") is not None and viz["y"] not in df_columns:
-        raise ValueError(f"Invalid y-axis: {viz['y']}")
+    # Only validate y if it's not None AND not a valid case for null
+    if viz.get("y") is not None:
+        if viz["y"] not in df_columns:
+            raise ValueError(f"Invalid y-axis: {viz['y']}")
 
     # --------------------------------------------------
-    # TOP N
+    # TOP N VALIDATION
     # --------------------------------------------------
     if viz.get("top_n") is not None:
         if not isinstance(viz["top_n"], int) or viz["top_n"] <= 0:
